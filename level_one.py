@@ -33,9 +33,6 @@ def level1():
     squirrel_x = random.randrange(20, screen_x - 100)
     squirrel_y = random.randrange(20, screen_y - 100)
 
-    char_xspeed = 0
-    char_yspeed = 0
-
     chicken1_hit = False
     chicken2_hit = False
     chicken3_hit = False
@@ -138,9 +135,11 @@ def level1():
         screen.blit(escape_text, (screen_x - 185, 40))
 
         # Victory message
-        victory_text = font.render('Congratulations! You collected all the chickens!', True, ('white'))
+        victory_text = font.render('Congratulations! You collected all the chickens!', True, 'white')
+        back_to_menu_text = font.render('Press <ESC> to return to the main menu', True, 'white')
         if chicken_counter == 3:
             screen.blit(victory_text, (screen_x / 2 - 250, screen_y / 2 - 10))
+            screen.blit(back_to_menu_text, (screen_x / 2 - 200, screen_y / 2 + 20))
 
         # The WASD / Arrow key controls for the game
         # Constrain the character to the playing screen
@@ -156,6 +155,3 @@ def level1():
 
         # Make the changes to the display
         pygame.display.flip()
-
-    screen.fill('black')
-    pygame.display.flip()
