@@ -3,10 +3,15 @@ import pygame
 pygame.init()
 import random
 
+### Features to add:
+### High-score: Session/all-time?
+### Background scrolling by slower than foreground - pixel art cloudy sky
+
 def level2():
 
     noquit = True
     random.seed()
+    import math
 
     while noquit:
 
@@ -36,10 +41,20 @@ def level2():
         # Start motionless
         char_velocity = 0 * delta
         char_grav = 15 * delta
-        max_velocity = 4.5
+        max_velocity = 700 * delta 
         pipe_speed = 200 * delta
 
-        pipe_vert_gap = 200
+        # Put the background onto a surface to dramatically increase performance
+        background_img = pygame.image.load("sky_background1.png").convert()
+        background_img = pygame.transform.scale(background_img, (background_img.get_width() / 1.5, background_img.get_height() / 1.5))
+        sky_surface = pygame.Surface(screen.get_size())
+        sky_surface.blit(background_img, (0,0))
+
+        # Check how many scrolling background tiles you need
+        tiles = math.ceil(screen_x / background_img.get_width()) + 1
+        scroll = 0
+
+        pipe_vert_gap = 195
         # Time between pipes in millisesconds
         pipe_wait_time = 2500
 
@@ -64,6 +79,11 @@ def level2():
         for i in range(num_pipes):
             top_pipe_length[i] = random.randrange(50, screen_y - 300)
 
+        # Hiscore tracking
+        hiscores_file = open("hiscores.txt", "r+")
+        hiscore = hiscores_file.readline()
+        hiscores_file.close()
+
         while running:
 
             for event in pygame.event.get():
@@ -87,12 +107,19 @@ def level2():
                         
 
             delta = clock.tick(144) / 1000
+            # screen.fill('black')
 
-            screen.fill((135, 206, 235))
+            # Draw scrolling background
+            for i in range(tiles):
+                screen.blit(background_img, (i * background_img.get_width() + scroll, 0))
+
+            # Reset scroll
+            if abs(scroll) > screen_x:
+                scroll = 0
 
             # Draw the character on the screen
             pygame.draw.rect(screen,'black',(char_x, char_y, 40, 40))
-            hitbox_player = pygame.Rect(char_x, char_y, 40, 40)
+            hitbox_player = pygame.Rect(char_x, char_y, 39, 39)
 
             if char_velocity < max_velocity:
                 char_velocity += char_grav
@@ -100,6 +127,7 @@ def level2():
             # Start things moving when player presses spacebar the first time
             if started:
                 char_y += char_velocity
+                scroll -= 50 * delta
                 # pipe1_x -= pipe_speed
 
             # collision1 = hitbox_player.colliderect(hitbox_pipe1_upper) or hitbox_player.colliderect(hitbox_pipe1_lower)
@@ -117,8 +145,8 @@ def level2():
                 if (350-(pipe_speed/2) < pipe_x[i] < 350+(pipe_speed/2)) and started:
                     score += 1
 
-            score_message = font.render(f"Your score was {score}!", True, 'white')
-            victory_message = font.render(f"Your score was {score}! You beat the game!!", True, 'white')
+            score_message = font.render(f"Your score was {score}!", True, 'black')
+            victory_message = font.render(f"Your score was {score}! You beat the game!!", True, 'black')
             # End if collision occurs
             if char_y < 0 or char_y > screen_y:
                 started = False
@@ -134,17 +162,21 @@ def level2():
                     screen.blit(score_message, (screen_x / 2 - 120, screen_y / 2 - 40))
                     dead = True
 
-            scorekeeper = font2.render(f"{score}", True, 'white')
+            scorekeeper = font2.render(f"{score}", True, 'black')
+            high_scorekeeper = font.render(f"Hiscore: {hiscore}", True, 'black')
 
             screen.blit(scorekeeper, (screen_x / 2 - 10, 20))
+            screen.blit(high_scorekeeper, (screen_x / 2 - 45, 70))
 
 
 
             if not dead:
-                intro_message = font.render('Press <Spacebar> to begin', True, 'white')
+                intro_message = font.render('Press <Spacebar> to begin', True, 'black')
             if dead:
-                intro_message = font.render('Press <R> to restart, or <ESC> to quit', True, 'white')
+                intro_message = font.render('Press <R> to restart, or <ESC> to quit', True, 'black')
                 intro_x = 210
+
+
             if not started:
                 screen.blit(intro_message, (screen_x / 2 - intro_x, screen_y / 2 - 20))
 
@@ -157,3 +189,8 @@ def level2():
             # screen.blit(temp_grav, (30, 60))
 
             pygame.display.flip()
+
+        if score > int(hiscore):
+            new_hiscores = open('hiscores.txt', 'w+')
+            new_hiscores.write(str(score))
+            new_hiscores.close()

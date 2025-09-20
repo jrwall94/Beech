@@ -4,6 +4,11 @@ pygame.init()
 import random
 random.seed()
 
+### Features to add:
+### Timer
+### High score: Session / all-time
+### Graphics
+
 def level1():
     ### Add timer, highscore (write to file)
 
