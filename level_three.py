@@ -94,7 +94,7 @@ def level3():
 
         treat_rate = ((shoppers * shoppers_speed) + (brokers * broker_speed) + (markets * market_speed) + (factories * factory_speed) +
                     (wizards * wizard_speed) + (overlords * overlord_speed) + (sophies * sophie_speed)
-                    ) * 500
+                    )
 
         for event in pygame.event.get():
             # Quit program if the top right X is clicked or ESC is pressed
