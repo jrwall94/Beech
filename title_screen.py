@@ -9,6 +9,7 @@ import time
 from level_one import level1
 from level_two import level2
 from level_three import level3
+from level_four import level4
 
 ### Features to add:
 ### Make the buttons expand slightly when moused over
@@ -40,6 +41,8 @@ def start_screen():
                     level2()
                 if level3_collision:
                     level3()
+                if level4_collision:
+                    level4()
 
         # Find the poisition of the mouse on the screen
         mouse_position = pygame.mouse.get_pos()
@@ -55,11 +58,13 @@ def start_screen():
         level1_hitbox = pygame.Rect(120, 190, 130, 120)
         level2_hitbox = pygame.Rect(320, 190, 130, 120)
         level3_hitbox = pygame.Rect(520, 190, 130, 120)
+        level4_hitbox = pygame.Rect(720, 190, 130, 120)
 
         # # Uncomment to see the hitboxes
         # pygame.draw.rect(screen, 'green', (120, 190, 130, 120))
         # pygame.draw.rect(screen, 'green', (320, 190, 130, 120))
         # pygame.draw.rect(screen, 'green', (520, 190, 130, 120))
+        # pygame.draw.rect(screen, 'green', (720, 190, 130, 120))
 
         # Images and text for level 1
         chicken_x = 120
@@ -114,6 +119,23 @@ def start_screen():
             dog_treat_y = 226
         dog_treat_img = pygame.transform.scale(dog_treat_img, (dog_treat_width, dog_treat_height))
         screen.blit(dog_treat_img, (dog_treat_x, dog_treat_y))
+
+        # Images and text for level 4
+        goose_hunt_img = pygame.image.load('goose_hunt.png')
+        goose_hunt_x = 720
+        goose_hunt_y = 210
+        goose_hunt_width = goose_hunt_img.get_width() / 14
+        goose_hunt_height = goose_hunt_img.get_height() / 14
+        level4_message = font.render("Level 4", True, 'white')
+        screen.blit(level4_message, (750, 200))
+        level4_collision = level4_hitbox.collidepoint(mouse_position)
+        if level4_collision:
+            goose_hunt_width = goose_hunt_img.get_width() / 11
+            goose_hunt_height = goose_hunt_img.get_height() / 11
+            goose_hunt_x = 700
+            goose_hunt_y = 200
+        goose_hunt_img = pygame.transform.scale(goose_hunt_img, (goose_hunt_width, goose_hunt_height))
+        screen.blit(goose_hunt_img, (goose_hunt_x, goose_hunt_y))
 
         pygame.display.flip()
 
